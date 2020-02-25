@@ -1,0 +1,265 @@
+
+#header.container-fluid {
+
+    padding: 0 1rem;
+    background: #d2eef9;
+    color: #000 !important;
+    z-index: 99;
+
+    .navb {
+        align-items: center;
+        font-weight: bold;
+        justify-content: space-around;
+        background: #d2eef9;
+        z-index: 99;
+        display: flex;
+
+        .logo{
+            display: flex
+        }
+
+        .links{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+        
+            .navitems {
+                padding: 1.5rem 2rem;
+                margin: 0;
+                font-weight: 500;
+                display: flex;
+                flex-direction: row;
+                text-decoration: none;
+                justify-content: space-around;
+                align-items: center;
+                color: #000;
+            
+                p{
+                    margin:0;
+                    margin-left: 0.7rem;
+                }
+
+            }
+
+            .navitems:hover {
+                cursor: pointer;
+                /* color: #403bde; */
+            }
+
+        }
+
+    }
+}
+
+.gg-briefcase {
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    transform: scale(var(--ggs,1));
+    width: 22px;
+    height: 16px;
+    border: 2px solid;
+    border-radius: 2px;
+    margin-top: 1px
+}
+.gg-briefcase::after,
+.gg-briefcase::before {
+    content: "";
+    display: block;
+    box-sizing: border-box;
+    position: absolute
+}
+.gg-briefcase::before {
+    border: 2px solid;
+    border-top-left-radius: 1px;
+    border-top-right-radius: 1px;
+    left: 4px;
+    width: 10px;
+    height: 4px;
+    border-bottom: 0;
+    top: -5px
+}
+.gg-briefcase::after {
+    width: 18px;
+    height: 3px;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 1px solid transparent;
+    box-shadow:
+        0 2px 0,
+        inset 16px 74px 0;
+    top: 4px
+}
+
+.gg-boy,
+.gg-boy::after,
+.gg-boy::before {
+    display: block;
+    box-sizing: border-box;
+    border-radius: 42px
+}
+.gg-boy {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    transform: scale(var(--ggs,1));
+    overflow: hidden;
+    box-shadow: inset 0 0 0 2px
+}
+.gg-boy::after,
+.gg-boy::before {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: currentColor;
+    box-shadow: 6px 0 0;
+    left: 6px;
+    top: 10px
+}
+.gg-boy::after {
+    width: 20px;
+    height: 20px;
+    top: -13px;
+    right: -12px;
+}
+
+.gg-organisation {
+    background:
+        linear-gradient(to bottom,
+            currentColor 5px,transparent 0)
+            no-repeat center 2px/12px 2px,
+        linear-gradient(to bottom,
+            currentColor 5px,transparent 0)
+            no-repeat center 6px/12px 2px,
+        linear-gradient(to bottom,
+            currentColor 5px,transparent 0)
+            no-repeat center 10px/12px 2px,
+        linear-gradient(to bottom,
+            currentColor 18px,transparent 0)
+            no-repeat center/2px 18px;
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    transform: scale(var(--ggs,1));
+    width: 12px;
+    height: 18px;
+    border: 2px solid
+  }
+  .gg-organisation::after,
+  .gg-organisation::before {
+    content: "";
+    display: block;
+    box-sizing: border-box;
+    position: absolute
+  }
+  .gg-organisation::before {
+    background: currentColor;
+    right: -8px;
+    top: 6px;
+    box-shadow: 0 4px 0,
+          -4px 4px 0,
+          -4px 0 0;
+    width: 2px;
+    height: 2px
+  }
+  .gg-organisation::after {
+    width: 12px;
+    height: 14px;
+    border: 2px solid;
+    left: 8px;
+    bottom: -2px
+  }
+  .gg-home {
+    background:
+        linear-gradient(to left,
+            currentColor 5px,transparent 0)
+            no-repeat 0 bottom/4px 2px,
+        linear-gradient(to left,
+            currentColor 5px,transparent 0)
+            no-repeat right bottom/4px 2px;
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    transform: scale(var(--ggs,1));
+    width: 18px;
+    height: 14px;
+    border: 2px solid;
+    border-top: 0;
+    border-bottom: 0;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-bottom: -2px
+  }
+  .gg-home::after,
+  .gg-home::before {
+    content: "";
+    display: block;
+    box-sizing: border-box;
+    position: absolute
+  }
+  .gg-home::before {
+    border-top: 2px solid;
+    border-left: 2px solid;
+    border-top-left-radius: 4px;
+    transform: rotate(45deg);
+    top: -5px;
+    border-radius: 3px;
+    width: 14px;
+    height: 14px;
+    left: 0
+  }
+  .gg-home::after {
+    width: 8px;
+    height: 10px;
+    border: 2px solid;
+    border-radius: 100px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: 0;
+    left: 3px;
+    bottom: 0
+  }
+
+  .gg-dribbble {
+    background:
+      radial-gradient(
+        circle at 50%,
+        transparent 0,
+        transparent 9px,
+        currentColor 9.2px,
+        currentColor 11px,
+        transparent 11.2px)
+        no-repeat -8px center;
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    transform: rotate(-25deg) scale(var(--ggs,1));
+    width: 22px;
+    height: 22px;
+    box-shadow: inset 0 0 0 2px;
+    border-radius: 50%;
+    overflow: hidden
+  }
+  .gg-dribbble::after,
+  .gg-dribbble::before {
+    content: "";
+    display: block;
+    box-sizing: border-box;
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid;
+    height: 26px
+  }
+  .gg-dribbble::before {
+    width: 36px;
+    left: -6px;
+    top: -15px
+  }
+  .gg-dribbble::after {
+    top: 13px;
+    left: -7px;
+    width: 31px
+  }
