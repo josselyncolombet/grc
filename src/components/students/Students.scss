@@ -8,16 +8,28 @@ tr {
     cursor: pointer;
 }
 
+.title-body-component{
+    font-size: 12px !important
+}
+
 .form-student{
     padding: 2rem;
     text-align: left;
 }
 
+.students{
+    background: #F5F6FA;
+    padding: 1rem;
+}
+
 .btn-add-student{
-        display: flex;
+    font-size: .75rem;
+    align-items: center;
+    display: flex;
     flex-direction: row;
     justify-content: space-between;
-    --ggs: 0.75;
+    --ggs: 0.55;
+   color: white;
 }
 
 .details{
@@ -98,7 +110,7 @@ tr {
         margin-right: 2rem;
     }
     .btn{
-        background:#0059ff;
+        background:#713BDB;
         padding: 0 1.5rem;
         font-size: .9rem;
 
@@ -117,7 +129,7 @@ tr {
     }
 
     .blue{
-        background: #0059ff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='white' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px;
+        background: #713BDB url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='white' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px;
         color:white;
     }
 
@@ -160,17 +172,27 @@ tr {
     font-weight: 500;
 }
  
+ td{
+     vertical-align: middle !important;
+ }
 .pills{
-    background-color:#E8EAEE;
-    padding:.2rem .5rem;
+    margin-top:2px;
+    display: flow-root;
+    background-color:black;
+    padding:.1rem .5rem;
     border-radius: .5rem;
-    font-weight: 600;
-    color:#868C9C;
+    font-weight: 500;
+    color:white;
+}
+
+.purple{
+    background-color:#713BDB;
+    color:white;
 }
 
 .yellow{
-    background-color:#ffeaa7;
-    color:#868C9C;
+    background-color:#f1c40f;
+    color:white;
 }
 
 .orange{
@@ -211,17 +233,17 @@ tr {
     background-color: #FFF !important;
 }
 .dot-p {
-  height: 12px;
-  width: 12px;
-  background-color: #0059ff;
+  height: 8px;
+  width: 8px;
+  background-color: #713BDB;
   border-radius: 50%;
   display: inline-block;
   margin-right: 5px;
 }
 .dot {
-  height: 12px;
-  width: 12px;
-  background-color: #0059ff;
+  height: 8px;
+  width: 8px;
+  background-color: #713BDB;
   border-radius: 50%;
   display: inline-block;
 }

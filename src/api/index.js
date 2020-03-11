@@ -1,51 +1,36 @@
-// Fonction pour lister tous les étudiants
-export async function getStudents(token) {
-
-    const url = 'http://localhost:8080/students/'
-    
-    try {
+export const getStudents = async () => {
+    const url = 'http://localhost:8080/students'
+    try{
         const response = await fetch(url, {
             method: 'GET',
-            headers: {
-                Accept: 'application/json',
+            headers:{
+                'Accept':'application/json',
                 'Content-Type': 'application/json'
             }
         })
         return await response.json()
+        
+    } catch(err){
+        return console.error(err)
     }
-    catch (error) {
-        return console.error(error)
-    }
-
 }
 
-// Fonction pour ajouter un étudiant manuellement
-export async function addStudent(token, year, classroom, student, date_soutenance) {
-
-    const url = process.env.REACT_APP_BASE_URL+'students/'
-    
-    try {
+export const addStudent = async (student) => {
+     const url = 'http://localhost:8080/students'
+    try{
         const response = await fetch(url, {
             method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                'x-access-token': token
+            headers:{
+                'Accept':'application/json',
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                year: year,
-                classroom: classroom,
-                student: student,
-                date_soutenance: date_soutenance
-            })
+            body: JSON.stringify(student)
         })
         return await response.json()
+        
+    } catch(err){
+        return console.error(err)
     }
-    catch (error) {
-        return console.error(error)
-    }
-
-
 }
 
 // Fonction pour modifier un étudiant manuellement

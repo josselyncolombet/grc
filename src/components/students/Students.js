@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './Students.scss'
 import '../../App.css';
 import { connect } from 'react-redux';
+import * as fromActions from '../../actions'
 import SlidingPanel from 'react-sliding-side-panel'
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import moment from 'moment'
@@ -13,17 +14,10 @@ import {
     Description
 } from 'vertical-timeline-component-react';
 
-import * as fromActions from '../../actions/students'
+
 import Select from 'react-select'
 
-const options = [
-    { value: 'BTS SIO', label: 'BTS SIO' },
-    { value: 'TIIS', label: 'TIIS' },
-    { value: 'Cycle ESI', label: 'Cycle ESI' },
-    { value: 'Bachelor RPI', label: 'Bachelor RPI' },
-    { value: 'Licence RPI', label: 'Licence RPI' },
-    { value: 'Master ESI', label: 'Master ESI' }
-]
+
 
 
 class Students extends Component {
@@ -46,8 +40,8 @@ class Students extends Component {
         }
     }
 
-    componentDidMount = () => {
-        let students = this.props.getStudents()
+    componentDidMount = async () => {
+        let students = await this.props.getStudents()
         this.setState({
             students: students
         })
@@ -78,11 +72,10 @@ class Students extends Component {
 
     render() {
         return (
-            <div className="container-fluid" id="students">
-
+            <div className="col-10 students" style={{overflow:'auto', maxHeight:'100vh'}}>
 
                 <div className="filters">
-                    <div className="col-7 d-flex flex-wrap">
+                    <div className="d-flex flex-wrap">
                         <select name="source" className={this.state.source != 'Source' ? 'custom-select blue' : 'custom-select'} value={this.state.source} onChange={(e) => this.handleInputChange(e)}>
                             <option defaultValue>Source</option>
                             <option value="1">One</option>
@@ -141,12 +134,22 @@ class Students extends Component {
                             <option value="2">Two</option>
                             <option value="3">Three</option>
                         </select>
+                        <select name="phoning" className={this.state.phoning != 'Prospection' ? 'custom-select blue' : 'custom-select'} value={this.state.phoning} onChange={(e) => this.handleInputChange(e)}>
+                            <option defaultValue>Etablissement</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                        <select name="phoning" className={this.state.phoning != 'Prospection' ? 'custom-select blue' : 'custom-select'} value={this.state.phoning} onChange={(e) => this.handleInputChange(e)}>
+                            <option defaultValue>Cursus</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
                     </div>
-                    <div className="col-3">
-                        <button className="btn btn-primary" onClick={() => this.setOpenCreatePanel(true)}> <div className="btn-add-student"><i className="gg-add" /> Creer un étudiant</div></button>
-                    </div>
+                   
                 </div>
-                <table className="table table-hover table-striped table-bordered" style={{ padding: '1rem' }}>
+                <table className="table table-hover" style={{ padding: '1rem' }}>
                     <thead>
                         <tr>
                             <th scope="col"> Nom </th>
@@ -169,15 +172,15 @@ class Students extends Component {
                             this.props.students.length > 0 ? this.props.students.map(student =>
                                 <tr onClick={() => this.setOpenPanel(true, student)}>
                                     <td className='name'> {student.name} {student.firstname}</td>
-                                    <td>prospect</td>
+                                    <td><span className={student.status == 'prospect' ? 'pills purple' : 'pills green'}> {student.status} </span></td>
                                     <td> {student.source} </td>
-                                    <td>16/02/2020</td>
-                                    <td> <span className="pills gray">{student.training}</span> <span className="pills yellow">BTS SIO</span>  </td>
+                                    <td> {moment.unix(student.timestamp/1000).format("MM-DD-YYYY")}</td>
+                                    <td> {student.trainings.map((training, i) => <span  key={i} className="pills yellow">{training}</span>)}</td>
                                     <td> {student.openhouse} </td>
-                                    <td></td>
-                                    <td><i className="dot" /></td>
-                                    <td> <i className="dot" /> </td>
-                                    <td> <span className="pills gray">BTS SIO 1</span></td>
+                                    <td> {student.interview}</td>
+                                    <td> {student.pp.length > 0 ? <i className="dot" /> : null }</td>
+                                    <td> {student.receipt.length > 0 ? <i className="dot" /> : null } </td>
+                                    <td> {student.classroom}</td>
                                     <td> {student.coaching} </td>
                                     <td> {
                                         student.phoning.map((phoning, id) => {
@@ -196,40 +199,12 @@ class Students extends Component {
                                                 >
                                                     <i key={id} className="dot-p" />
                                                 </OverlayTrigger>
-                                                <OverlayTrigger
-                                                    placement="left"
-                                                    delay={{ show: 100, hide: 400 }}
-                                                    overlay={
-                                                        <Popover id="popover-basic">
-                                                            <Popover.Title as="h3">{phoning.date}</Popover.Title>
-                                                            <Popover.Content className="popover-content">
-                                                                {phoning.comment}
-                                                            </Popover.Content>
-                                                        </Popover>
-                                                    }
-                                                >
-                                                    <i key={id} className="dot-p" />
-                                                </OverlayTrigger>
-                                                <OverlayTrigger
-                                                    placement="left"
-                                                    delay={{ show: 100, hide: 400 }}
-                                                    overlay={
-                                                        <Popover id="popover-basic">
-                                                            <Popover.Title as="h3">{phoning.date}</Popover.Title>
-                                                            <Popover.Content className="popover-content">
-                                                                Marc a été perspicacce au téléphone
-                                                            </Popover.Content>
-                                                        </Popover>
-                                                    }
-                                                >
-                                                    <i key={id} className="dot-p" />
-                                                </OverlayTrigger>
+                                               
                                                 </div>
                                             )
                                         })
                                     }
                                     </td>
-
 
                                 </tr>
                             ) : null
@@ -258,6 +233,14 @@ class Students extends Component {
                             <div className="contact-details">
                                 <i className="gg-pin icon" />
                                 <span>{this.state.student.driverlicence ? "Permis B" : "Pas de permis"}</span>
+                            </div>
+                            <div className="contact-details">
+                                <i className="gg-pin icon" />
+                                <span>Lycée Ella Fitzgerald</span>
+                            </div>
+                            <div className="contact-details">
+                                <i className="gg-pin icon" />
+                                <span>Addresse</span>
                             </div>
                         </div>
 
@@ -357,73 +340,7 @@ class Students extends Component {
                         </Timeline>
                     </div>
                 </SlidingPanel>
-                <SlidingPanel
-                    type={'right'}
-                    isOpen={this.state.openCreatePanel}
-                    backdropClicked={() => this.setState({ openCreatePanel: false })}
-                    panelClassName="panel-student"
-                    size={40}
-                >
-
-                    <div className="details">
-                        <div className="name">Ajouter un prospect</div>
-                    </div>
-                    <div className="form-student">
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="name">Nom</label>
-                                <input type="text" class="form-control" id="name" placeholder="Nom" />
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="firstname">Prénom</label>
-                                <input type="text" class="form-control" id="firstname" placeholder="Prénom" />
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="email">Email</label>
-                                <input type="email" class="form-control" id="email" placeholder="Email" />
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="phone">Téléphone</label>
-                                <input type="text" class="form-control" id="phone" placeholder="Téléphone" />
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="inputState">Cursus</label>
-                                <select name="source" className={this.state.source != 'Source' ? 'custom-select blue' : 'custom-select'} value={this.state.source} onChange={(e) => this.handleInputChange(e)}>
-                                    <option defaultValue>Cursus</option>
-                                    <option value="Bac G/T - Terminale">Bac G/T - Terminale</option>
-                                    <option value="Bac G/T - Premiere">Bac G/T - Premiere</option>
-                                    <option value="Bac G/T - Seconde">Bac G/T - Seconde</option>
-                                    <option value="Bac Pro">Bac Pro</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="inputState">Source</label>
-                                <select name="source" className={this.state.source != 'Source' ? 'custom-select blue' : 'custom-select'} value={this.state.source} onChange={(e) => this.handleInputChange(e)}>
-                                    <option defaultValue>Source</option>
-                                    <option value="jivochat">Jivochat</option>
-                                    <option value="Lyon - Salon de l'étudiant">Lyon - Salon de l'étudiant</option>
-                                    <option value="Valence- Salon de l'étudiant">Valence - Salon de l'étudiant</option>
-                                    <option value="Grenoble - Salon de l'étudiant">Grenoble - Salon de l'étudiant</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-12">
-                                <label for="inputState">Formation(s) souhaitée(s)</label>
-                                <Select options={options} isMulti placeholder="Formation(s) souhaitée(s)" />
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <button className="btn btn-primary"> <div className="btn-add-student"> Creer un étudiant</div></button>
-                        </div>
-                    </div>
-
-
-                </SlidingPanel>
+                
             </div>
         );
     }
@@ -434,9 +351,8 @@ const mapStateToProps = (state) => ({
     students: state.students.students
 })
 
-// Permet d'envoyer des infos dans le store
 const mapDispatchToProps = dispatch => ({
-    getStudents: () => dispatch(fromActions.getStudents()),
+    getStudents: () => dispatch(fromActions.getStudentsSaga()),
 
 })
 

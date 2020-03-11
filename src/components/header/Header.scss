@@ -1,54 +1,61 @@
 
-#header.container-fluid {
+.links{
+    padding: .75rem;
+    text-align: center;
+}
 
-    padding: 0 1rem;
-    background: #d2eef9;
-    color: #000 !important;
-    z-index: 99;
+.sidebar{
+    box-shadow: 16px 15px 20px 0px rgba(0,0,0,0.06);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
 
-    .navb {
-        align-items: center;
-        font-weight: bold;
-        justify-content: space-around;
-        background: #d2eef9;
-        z-index: 99;
-        display: flex;
+.btn-export{
+    background:#33D59E;
+    border: 1px solid  #33D59E;
+}
 
-        .logo{
-            display: flex
-        }
+.btn-export:hover{
+    background:#33D59E;
+    border: 1px solid  #33D59E;
+}
 
-        .links{
-            display: flex;
-            flex-direction: row;
-            justify-content: space-around;
-        
-            .navitems {
-                padding: 1.5rem 2rem;
-                margin: 0;
-                font-weight: 500;
-                display: flex;
-                flex-direction: row;
-                text-decoration: none;
-                justify-content: space-around;
-                align-items: center;
-                color: #000;
-            
-                p{
-                    margin:0;
-                    margin-left: 0.7rem;
-                }
+.btn-export:active{
+    background:#33D59E;
+    border: 1px solid  #33D59E;
+}
 
-            }
+.actions{
+    padding: .75rem;
+    text-align: center;
+}
 
-            .navitems:hover {
-                cursor: pointer;
-                /* color: #403bde; */
-            }
+.btn-primary{
+    background:#713BDB;
+    border: 1px solid  #713BDB;
+}
 
-        }
+.btn-primary:hover{
+    background:#713BDB;
+    border: 1px solid  #713BDB;
+}
 
-    }
+.btn-primary:active{
+    background:#713BDB;
+    border: 1px solid  #713BDB;
+}
+
+.navitems{
+    text-align: center;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    align-self: center;
+    padding: 1rem 1rem;
+    font-weight: 600;
+    --ggs: 0.55;
 }
 
 .gg-briefcase {

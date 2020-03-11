@@ -8,7 +8,7 @@ const StudentsReducer = (state = initialState, action) => {
         case 'GET_STUDENTS':
             state = {
                 ...state,
-                students: action.students
+                students: action.payload
             }
             return state;
         default:
