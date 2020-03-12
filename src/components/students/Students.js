@@ -4,7 +4,7 @@ import '../../App.css';
 import { connect } from 'react-redux';
 import * as fromActions from '../../actions'
 import SlidingPanel from 'react-sliding-side-panel'
-import { OverlayTrigger, Popover } from 'react-bootstrap';
+import { Accordion, Card, OverlayTrigger, Popover } from 'react-bootstrap'
 import moment from 'moment'
 import {
     Timeline,
@@ -14,9 +14,17 @@ import {
     Description
 } from 'vertical-timeline-component-react';
 
-
+import fuzzy from 'fuzzy-search'
 import Select from 'react-select'
 
+const options = [
+    { value: 'BTS SIO', label: 'BTS SIO' },
+    { value: 'TIIS', label: 'TIIS' },
+    { value: 'Cycle ESI', label: 'Cycle ESI' },
+    { value: 'Bachelor RPI', label: 'Bachelor RPI' },
+    { value: 'Licence RPI', label: 'Licence RPI' },
+    { value: 'Master ESI', label: 'Master ESI' }
+]
 
 
 
@@ -35,18 +43,33 @@ class Students extends Component {
             receipt: "Attestation d'inscription",
             coaching: 'Coaching',
             phoning: 'Prospection',
-            statut:'Statut',
-            student: {}
+            statut: 'Statut',
+            classroom: 'Classe',
+            institute: 'Etablissement',
+            cursus: 'Cursus',
+            interview: 'Entretien',
+            student: {},
+            steps: {
+                openhouse: false,
+                interview: false,
+                pp: false,
+                receipt: false,
+                coaching: false,
+                phoning: false,
+                classroom: false
+            }
         }
     }
 
     componentDidMount = async () => {
-        let students = await this.props.getStudents()
+        await this.props.getStudents()
+
+    }
+    componentWillReceiveProps = props => {
         this.setState({
-            students: students
+            students: props.students
         })
     }
-
     setOpenPanel = (bool, student) => {
         this.setState({
             openPanel: bool,
@@ -60,94 +83,107 @@ class Students extends Component {
         })
     }
 
+    handleReactSelectChange = selectedOptions => {
+        let trainings= selectedOptions.map(t => t.value)
+        this.setState({ trainings: trainings })
+    };
+
     handleInputChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
+        let result = this.props.students
+        let searcher
+        switch (name) {
+            case 'statut':
+                if (value == 'Statut') {
+                    result = this.props.students
+                } else {
+                    searcher = new fuzzy(this.props.students, ['status'])
+                    result = searcher.search(value)
+                }
+                break;
+            case 'source':
+                if (value == 'Source') {
+                    result = this.props.students
+                } else {
+                    searcher = new fuzzy(this.props.students, ['source'])
+                    result = searcher.search(value)
+                }
+                break;
+
+            default:
+                break;
+        }
 
         this.setState({
-            [name]: value
-        });
+            [name]: value,
+            students: result
+        }, () => console.log(this.state));
+
     }
 
     render() {
         return (
-            <div className="col-10 students" style={{overflow:'auto', maxHeight:'100vh'}}>
+            <div className="col-10 students" style={{ overflow: 'auto', maxHeight: '100vh' }}>
 
                 <div className="filters">
                     <div className="d-flex flex-wrap">
-                        <select name="source" className={this.state.source != 'Source' ? 'custom-select blue' : 'custom-select'} value={this.state.source} onChange={(e) => this.handleInputChange(e)}>
-                            <option defaultValue>Source</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
                         <select name="statut" className={this.state.statut != 'Statut' ? 'custom-select blue' : 'custom-select'} value={this.state.statut} onChange={(e) => this.handleInputChange(e)}>
                             <option defaultValue>Statut</option>
-                            <option value="1">Apprenant</option>
-                             <option value="2">Prospect</option>
+                            {this.props.filters.status.length > 0 ? this.props.filters.status.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
                         </select>
-                        <select name="training" className={this.state.training != 'Formation souhaitée' ? 'custom-select blue' : 'custom-select'} value={this.state.training} onChange={(e) => this.handleInputChange(e)}>
-                            <option defaultValue>Date de contact</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                        <select name="source" className={this.state.source != 'Source' ? 'custom-select blue' : 'custom-select'} value={this.state.source} onChange={(e) => this.handleInputChange(e)}>
+                            <option defaultValue>Source</option>
+                            {this.props.filters.source.length > 0 ? this.props.filters.source.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
                         </select>
                         <select name="training" className={this.state.training != 'Formation souhaitée' ? 'custom-select blue' : 'custom-select'} value={this.state.training} onChange={(e) => this.handleInputChange(e)}>
                             <option defaultValue>Formation</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            {this.props.filters.trainings.length > 0 ? this.props.filters.trainings.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
                         </select>
                         <select name="openhouse" className={this.state.openhouse != 'Portes ouvertes' ? 'custom-select blue' : 'custom-select'} value={this.state.openhouse} onChange={(e) => this.handleInputChange(e)}>
-                            <option defaultValue>Portes ouvertes</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            <option defaultValue>JPO</option>
+                            {this.props.filters.openhouse.length > 0 ? this.props.filters.openhouse.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
+                        </select>
+                        <select name="interview" className={this.state.interview != 'Entretien' ? 'custom-select blue' : 'custom-select'} value={this.state.interview} onChange={(e) => this.handleInputChange(e)}>
+                            <option defaultValue>Entretien</option>
+                            <option value="true">Entretien : Oui</option>
+                            <option value="false">Entretien : Non</option>
                         </select>
                         <select name="pp" className={this.state.pp != 'PPE' ? 'custom-select blue' : 'custom-select'} value={this.state.pp} onChange={(e) => this.handleInputChange(e)}>
                             <option defaultValue>PPE</option>
-                            <option value="1">PPE : Oui</option>
-                             <option value="2">PPE : Non</option>
+                            <option value="true">PPE : Oui</option>
+                            <option value="false">PPE : Non</option>
                         </select>
                         <select name="receipt" className={this.state.receipt != "Attestation d'inscription" ? 'custom-select blue' : 'custom-select'} value={this.state.receipt} onChange={(e) => this.handleInputChange(e)}>
-                            <option defaultValue>Attestation d'inscription</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            <option defaultValue>AI</option>
+                            <option value="true">AI : Oui</option>
+                            <option value="false">AI : Non</option>
                         </select>
-                        <select name="receipt" className={this.state.receipt != "Attestation d'inscription" ? 'custom-select blue' : 'custom-select'} value={this.state.receipt} onChange={(e) => this.handleInputChange(e)}>
+                        <select name="classroom" className={this.state.classroom != "Classe" ? 'custom-select blue' : 'custom-select'} value={this.state.classroom} onChange={(e) => this.handleInputChange(e)}>
                             <option defaultValue>Classe</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            {this.props.filters.classroom.length > 0 ? this.props.filters.classroom.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
                         </select>
                         <select name="coaching" className={this.state.coaching != 'Coaching' ? 'custom-select blue' : 'custom-select'} value={this.state.coaching} onChange={(e) => this.handleInputChange(e)}>
                             <option defaultValue>Coaching</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            <option value="true">AI : Oui</option>
+                            <option value="false">AI : Non</option>
                         </select>
                         <select name="phoning" className={this.state.phoning != 'Prospection' ? 'custom-select blue' : 'custom-select'} value={this.state.phoning} onChange={(e) => this.handleInputChange(e)}>
                             <option defaultValue>Prospection</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            <option value="true">AI : Oui</option>
+                            <option value="false">AI : Non</option>
                         </select>
-                        <select name="phoning" className={this.state.phoning != 'Prospection' ? 'custom-select blue' : 'custom-select'} value={this.state.phoning} onChange={(e) => this.handleInputChange(e)}>
+                        <select name="institute" className={this.state.institute != 'Etablissement' ? 'custom-select blue' : 'custom-select'} value={this.state.institute} onChange={(e) => this.handleInputChange(e)}>
                             <option defaultValue>Etablissement</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            {this.props.filters.institute.length > 0 ? this.props.filters.institute.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
                         </select>
-                        <select name="phoning" className={this.state.phoning != 'Prospection' ? 'custom-select blue' : 'custom-select'} value={this.state.phoning} onChange={(e) => this.handleInputChange(e)}>
+                        <select name="cursus" className={this.state.cursus != 'Cursus' ? 'custom-select blue' : 'custom-select'} value={this.state.cursus} onChange={(e) => this.handleInputChange(e)}>
                             <option defaultValue>Cursus</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            {this.props.filters.cursus.length > 0 ? this.props.filters.cursus.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
                         </select>
                     </div>
-                   
+
                 </div>
                 <table className="table table-hover" style={{ padding: '1rem' }}>
                     <thead>
@@ -169,17 +205,17 @@ class Students extends Component {
                     <tbody>
 
                         {
-                            this.props.students.length > 0 ? this.props.students.map(student =>
-                                <tr onClick={() => this.setOpenPanel(true, student)}>
+                            this.state.students.length > 0 ? this.state.students.map((student, i) =>
+                                <tr key={i} onClick={() => this.setOpenPanel(true, student)}>
                                     <td className='name'> {student.name} {student.firstname}</td>
                                     <td><span className={student.status == 'prospect' ? 'pills purple' : 'pills green'}> {student.status} </span></td>
                                     <td> {student.source} </td>
-                                    <td> {moment.unix(student.timestamp/1000).format("MM-DD-YYYY")}</td>
-                                    <td> {student.trainings.map((training, i) => <span  key={i} className="pills yellow">{training}</span>)}</td>
-                                    <td> {student.openhouse} </td>
+                                    <td> {moment.unix(student.timestamp / 1000).format("MM-DD-YYYY")}</td>
+                                    <td> {student.trainings.map((training, i) => <span key={i} className="pills purple">{training}</span>)}</td>
+                                    <td> 11/03/2020 </td>
                                     <td> {student.interview}</td>
-                                    <td> {student.pp.length > 0 ? <i className="dot" /> : null }</td>
-                                    <td> {student.receipt.length > 0 ? <i className="dot" /> : null } </td>
+                                    <td> {student.pp.length > 0 ? <i className="dot" /> : null}</td>
+                                    <td> {student.receipt.length > 0 ? <i className="dot" /> : null} </td>
                                     <td> {student.classroom}</td>
                                     <td> {student.coaching} </td>
                                     <td> {
@@ -199,8 +235,8 @@ class Students extends Component {
                                                 >
                                                     <i key={id} className="dot-p" />
                                                 </OverlayTrigger>
-                                               
-                                                </div>
+
+                                            </div>
                                             )
                                         })
                                     }
@@ -245,102 +281,404 @@ class Students extends Component {
                         </div>
 
                         <div className="documents">
-                            <section>
-                                <div className="pp">
-                                    <div className="group">
-                                        <div className="surround orange">
-                                            <i className="gg-directory"></i>
-                                        </div>
-                                        <div className="text">
-                                            <p className="title">PPE</p>
-                                            <p className="date">16/02/2020</p>
-                                        </div>
-                                    </div>
-                                    <div style={{ alignSelf: 'center' }}>
-                                        <i className="gg-arrow-down"></i>
-                                    </div>
-                                </div>
-                            </section>
-                            <section>
-                                <div className="pp">
-                                    <div className="group">
-                                        <div className="surround orange">
-                                            <i className="gg-file-document"></i>
-                                        </div>
-                                        <div className="text">
-                                            <p className="title">Attestation d'inscription</p>
-                                            <p className="date">16/02/2020</p>
-                                        </div>
-                                    </div>
-                                    <div style={{ alignSelf: 'center' }}>
-                                        <i class="gg-arrow-down"></i>
-                                    </div>
-                                </div>
-                            </section>
+                            <Accordion>
+                                <Card>
+                                    <Accordion.Toggle as={Card.Header} eventKey="0">
+                                        <section>
+                                            <div className="pp">
+                                                <div className="group">
+                                                    <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0 }}>1</p>
+                                                    <div className="text">
+                                                        <p className="title">Journée portes ouvertes</p>
+                                                        <p className="date">Fait le : 16/02/2020</p>
+                                                    </div>
+                                                </div>
+                                                <div style={{ alignSelf: 'center' }}>
+                                                    <i className="dot-green"></i>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </Accordion.Toggle>
+                                    <Accordion.Collapse eventKey="0">
+                                        <Card.Body>
+                                            <div className="form-student">
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-6">
+                                                        <label for="name">Portes ouvertes: </label>
+                                                        <select name="statut" className='custom-select blue' value={this.state.jpo}>
+                                                            <option defaultValue>11/03/2020</option>
+                                                            <option value="08/02/2020">08/02/2020</option>
+                                                            <option value="22/02/2020">22/02/2020</option>
+                                                        </select>
+                                                        <button className="btn btn-primary btn-add-student" style={{ marginTop: '2rem', background: 'gray', border: 'none' }} disabled>Enregistrer</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+
+
+                                <Card>
+                                    <Accordion.Toggle as={Card.Header} eventKey="1">
+                                        <section>
+                                            <div className="pp">
+                                                <div className="group">
+                                                    <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0 }}>2</p>
+                                                    <div className="text">
+                                                        <p className="title">Entretien</p>
+                                                        <p className="date">A faire</p>
+                                                    </div>
+                                                </div>
+                                                <div style={{ alignSelf: 'center' }}>
+                                                    <i className="dot-red"></i>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </Accordion.Toggle>
+                                    <Accordion.Collapse eventKey="1">
+                                        <Card.Body>
+                                            <div className="form-student">
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-6">
+                                                        <label for="name">Date: </label>
+                                                        <input type="text" className="form-control form-control-sm" />
+
+                                                    </div>
+                                                    <div className="form-group col-md-6">
+                                                        <label for="who">Réalisé par: </label>
+                                                        <select name="who" className='custom-select' value={this.state.interviewer}>
+                                                            <option defaultValue>Conseiller </option>
+                                                            <option value="08/02/2020">Tayeb</option>
+                                                            <option value="22/02/2020">Nicolas</option>
+                                                            <option value="22/02/2020">Sandrine</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-12">
+                                                        <label for="name">Commentaires: </label>
+                                                        <textarea type="text" className="form-control form-control-sm" />
+                                                        <button className="btn btn-primary btn-add-student" style={{ marginTop: '2rem' }}>Enregistrer</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+
+
+                                <Card>
+                                    <Accordion.Toggle as={Card.Header} eventKey="2">
+                                        <section>
+                                            <div className="pp">
+                                                <div className="group">
+                                                    <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0 }}>3</p>
+                                                    <div className="text">
+                                                        <p className="title">PPE</p>
+                                                        <p className="date">A faire</p>
+                                                    </div>
+                                                </div>
+                                                <div style={{ alignSelf: 'center' }}>
+                                                    <i className="dot-red"></i>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </Accordion.Toggle>
+                                    <Accordion.Collapse eventKey="2">
+                                        <Card.Body>
+                                            <div className="form-student">
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-6">
+                                                        <label for="name">Nom: </label>
+                                                        <input type="text" className="form-control form-control-sm" value={this.state.student.name}/>
+
+                                                    </div>
+                                                    <div className="form-group col-md-6">
+                                                        <label for="name">Prénom: </label>
+                                                        <input type="text" className="form-control form-control-sm" value={this.state.student.firstname}/>
+
+                                                    </div>
+                                                </div>
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-6">
+                                                        <label for="name">Téléphone: </label>
+                                                        <input type="text" className="form-control form-control-sm" />
+
+                                                    </div>
+                                                    <div className="form-group col-md-6">
+                                                        <label for="name">Email: </label>
+                                                        <input type="text" className="form-control form-control-sm" />
+
+                                                    </div>
+                                                </div>
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-6">
+                                                        <label for="name">Date: </label>
+                                                        <input type="text" className="form-control form-control-sm" />
+
+                                                    </div>
+                                                    <div className="form-group col-md-6">
+                                                        <label for="who">Réalisé par: </label>
+                                                        <select name="who" className='custom-select' value={this.state.interviewer}>
+                                                            <option defaultValue>Conseiller</option>
+                                                            <option value="08/02/2020">Tayeb</option>
+                                                            <option value="22/02/2020">Nicolas</option>
+                                                            <option value="22/02/2020">Sandrine</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-6">
+                                                        <label for="who">Etablissement: </label>
+                                                        <select name="who" className='custom-select' value={this.state.interviewer}>
+                                                            <option defaultValue>Etablissement</option>
+                                                            <option value="08/02/2020">Ella Fitzgerald</option>
+                                                            <option value="22/02/2020">Les Chartreux</option>
+                                                            <option value="22/02/2020">La Xaviere</option>
+                                                            <option value="22/02/2020">Robin</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-6">
+                                                        <label for="inputState">Formation(s) souhaitée(s): </label>
+                                                        <Select options={options} onChange={(e) => this.handleReactSelectChange(e)} isMulti placeholder="Formation(s) souhaitée(s)" />
+                                                    </div>
+                                                    <div className="form-group col-md-6">
+                                                        <label for="name">Objectif de métier:</label>
+                                                        <input type="text" className="form-control form-control-sm" />
+
+                                                    </div>
+                                                </div>
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-12">
+                                                        <label for="name">Commentaires:</label>
+                                                        <textarea type="text" className="form-control form-control-sm" />
+                                                        <button className="btn btn-primary btn-add-student" style={{ marginTop: '2rem' }}>Enregistrer</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+
+                                <Card>
+                                    <Accordion.Toggle as={Card.Header} eventKey="3">
+                                        <section>
+                                            <div className="pp">
+                                                <div className="group">
+                                                    <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0 }}>4</p>
+                                                    <div className="text">
+                                                        <p className="title">Attestation d'inscription</p>
+                                                        <p className="date">A faire</p>
+                                                    </div>
+                                                </div>
+                                                <div style={{ alignSelf: 'center' }}>
+                                                    <i className="dot-red"></i>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </Accordion.Toggle>
+                                    <Accordion.Collapse eventKey="3">
+                                        <Card.Body>
+                                        <div className="form-student">
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-6">
+                                                        <label for="name">Nom: </label>
+                                                        <input type="text" className="form-control form-control-sm" value={this.state.student.name}/>
+
+                                                    </div>
+                                                    <div className="form-group col-md-6">
+                                                        <label for="name">Prénom: </label>
+                                                        <input type="text" className="form-control form-control-sm" value={this.state.student.firstname}/>
+
+                                                    </div>
+                                                </div>
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-6">
+                                                        <label for="name">Téléphone: </label>
+                                                        <input type="text" className="form-control form-control-sm" />
+
+                                                    </div>
+                                                    <div className="form-group col-md-6">
+                                                        <label for="name">Date: </label>
+                                                        <input type="text" className="form-control form-control-sm" />
+
+                                                    </div>
+                                                </div>
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-6">
+                                                        <label for="inputState">Formation(s) souhaitée(s): </label>
+                                                        <Select options={options} onChange={(e) => this.handleReactSelectChange(e)} isMulti placeholder="Formation(s) souhaitée(s)" />
+                                                        <button className="btn btn-primary btn-add-student" style={{ marginTop: '2rem' }}>Enregistrer</button>
+                                                    </div>
+                                                    <div className="form-group col-md-6">
+                                                        <label for="name">Date du coaching prévu: </label>
+                                                        <input type="text" className="form-control form-control-sm" />
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+
+                                <Card>
+                                    <Accordion.Toggle as={Card.Header} eventKey="4">
+                                        <section>
+                                            <div className="pp">
+                                                <div className="group">
+                                                    <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0 }}>5</p>
+                                                    <div className="text">
+                                                        <p className="title">Coaching</p>
+                                                        <p className="date">A faire</p>
+                                                    </div>
+                                                </div>
+                                                <div style={{ alignSelf: 'center' }}>
+                                                    <i className="dot-red"></i>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </Accordion.Toggle>
+                                    <Accordion.Collapse eventKey="4">
+                                        <Card.Body>
+                                            <div className="form-student">
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-6">
+                                                        <label for="name">Date: </label>
+                                                        <input type="text" className="form-control form-control-sm" />
+
+                                                    </div>
+                                                    <div className="form-group col-md-6">
+                                                        <label for="who">Réalisé par: </label>
+                                                        <select name="who" className='custom-select' value={this.state.interviewer}>
+                                                            <option defaultValue>Personnel</option>
+                                                            <option value="08/02/2020">Tayeb</option>
+                                                            <option value="22/02/2020">Nicolas</option>
+                                                            <option value="22/02/2020">Sandrine</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-12">
+                                                        <label for="name">Commentaires :</label>
+                                                        <textarea type="text" className="form-control form-control-sm" />
+                                                        <button className="btn btn-primary btn-add-student" style={{ marginTop: '2rem' }}>Enregistrer</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+
+                                <Card>
+                                    <Accordion.Toggle as={Card.Header} eventKey="5">
+
+                                        <section>
+                                            <div className="pp">
+                                                <div className="group">
+                                                    <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0 }}>6</p>
+                                                    <div className="text">
+                                                        <p className="title">Prospection téléphonique</p>
+                                                        <p className="date">A faire</p>
+                                                    </div>
+                                                </div>
+                                                <div style={{ alignSelf: 'center' }}>
+                                                    <i className="dot-red"></i>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </Accordion.Toggle>
+                                    <Accordion.Collapse eventKey="5">
+                                        <Card.Body>
+                                            <div className="form-student">
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-6">
+                                                        <label for="name">Date: </label>
+                                                        <input type="text" className="form-control form-control-sm" />
+                                                    </div>
+                                                </div>
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-12">
+                                                        <label for="name">Commentaires :</label>
+                                                        <textarea type="text" className="form-control form-control-sm" />
+                                                        <button className="btn btn-primary btn-add-student" style={{ marginTop: '2rem' }}>Ajouter</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+
+                                <Card>
+                                    <Accordion.Toggle as={Card.Header} eventKey="6">
+
+                                        <section>
+                                            <div className="pp">
+                                                <div className="group">
+                                                    <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0 }}>7</p>
+                                                    <div className="text">
+                                                        <p className="title">Rentrée</p>
+                                                        <p className="date">A faire</p>
+                                                    </div>
+                                                </div>
+                                                <div style={{ alignSelf: 'center' }}>
+                                                    <i className="dot-red"></i>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </Accordion.Toggle>
+                                    <Accordion.Collapse eventKey="6">
+                                        <Card.Body>
+                                            <div className="form-student">
+                                                <div className="form-row">
+                                                    <div className="form-group col-md-6">
+                                                        <label for="name">Date: </label>
+                                                        <input type="text" className="form-control form-control-sm" />
+                                                        <button className="btn btn-primary btn-add-student" style={{ marginTop: '2rem' }}>Enregistrer</button>
+                                                    </div>
+                                                    <div className="form-group col-md-6">
+                                                        <label for="who">Classe: </label>
+                                                        <select name="who" className='custom-select' value={this.state.class}>
+                                                            <option defaultValue>Classe</option>
+                                                            <option value="22/02/2020">ESI MD5</option>
+                                                            <option value="22/02/2020">ESI MR5</option>
+                                                            <option value="22/02/2020">ESI MD4</option>
+                                                            <option value="22/02/2020">ESI MR4</option>
+                                                            <option value="22/02/2020">SIO 1</option>
+                                                            <option value="22/02/2020">SIO 2</option>
+                                                            <option value="22/02/2020">B1</option>
+                                                            <option value="22/02/2020">B2 D</option>
+                                                            <option value="22/02/2020">B2 R</option>
+                                                            <option value="22/02/2020">B3 D</option>
+                                                            <option value="22/02/2020">B3 R</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+
+
+
+                            </Accordion>
+
+
+
+
+
+
                         </div>
-                        <Timeline>
-                            <Content>
-                                <ContentYear
-                                    startMonth="12"
-                                    monthType="number"
-                                    startDay="24"
-                                    startYear="2020"
-
-                                />
-                                <ContentBody title="Prospection">
-                                    <Description
-                                        text="Retour fiducial Retour fiducial"
-
-                                    />
-                                </ContentBody>
-                            </Content>
-                            <Content>
-                                <ContentYear
-                                    startMonth="12"
-                                    monthType="number"
-                                    startDay="24"
-                                    startYear="2020"
-
-                                />
-                                <ContentBody title="Coaching">
-                                    <Description
-                                        text="Motivé, dynamique à envoyé plusieurs cv"
-
-                                    />
-                                </ContentBody>
-                            </Content>
-                            <Content>
-                                <ContentYear
-                                    startMonth="12"
-                                    monthType="number"
-                                    startDay="24"
-                                    startYear="2020"
-
-                                />
-                                <ContentBody title="Entretien">
-                                    <Description
-                                        text="Motivé, recherche une entreprise en dev"
-                                    />
-                                </ContentBody>
-                            </Content>
-                            <Content>
-                                <ContentYear
-                                    startMonth="12"
-                                    monthType="number"
-                                    startDay="24"
-                                    startYear="2020"
-
-                                />
-                                <ContentBody title="Portes ouvertes">
-                                    <Description
-                                        text="Interessé par le cycle ESI"
-                                    />
-                                </ContentBody>
-                            </Content>
-                        </Timeline>
                     </div>
                 </SlidingPanel>
-                
+
             </div>
         );
     }
@@ -348,7 +686,8 @@ class Students extends Component {
 
 
 const mapStateToProps = (state) => ({
-    students: state.students.students
+    students: state.students.students,
+    filters: state.filters
 })
 
 const mapDispatchToProps = dispatch => ({

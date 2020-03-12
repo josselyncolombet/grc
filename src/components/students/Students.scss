@@ -42,6 +42,7 @@ tr {
         display: flex;
         flex-direction: row;
         align-items: center;
+        flex-wrap: wrap;
         justify-content: center;
         .contact-details{
             display: flex;
@@ -61,7 +62,7 @@ tr {
             justify-content: space-between;
             padding: 1rem;
             width: 100%;
-            border-bottom: 1px solid #8080801c;
+            
 
             .group{
                 display: flex;
@@ -71,12 +72,14 @@ tr {
 
             .text{
                 display: flex;
+                margin-left:2.2rem;
                 flex-direction: column;
-                justify-content: space-around;
+                justify-content: center;
 
                 .title{
                     font-weight: bold;
                     text-align: left;
+                    font-size: 1.1rem
                 }
                 .date{
                     color:#A1ACB8;
@@ -115,6 +118,11 @@ tr {
         font-size: .9rem;
 
     }
+}
+
+.blue{
+    background: #713BDB url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='white' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px;
+    color:white;
 }
 
 .filters{
@@ -247,6 +255,21 @@ tr {
   border-radius: 50%;
   display: inline-block;
 }
+.dot-red {
+    height: 16px;
+    width: 16px;
+    background-color: #e74c3c;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .dot-green {
+    height: 16px;
+    width: 16px;
+    background-color: #2ecc71;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  
 
 .header{
     display: flex;
