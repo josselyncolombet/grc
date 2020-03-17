@@ -36,7 +36,7 @@
     "start": "react-scripts start",
     "start-dev": "set NODE_ENV=dev &&  env-cmd -e dev react-scripts start",
     "start-prod": "set NODE_ENV=prod &&  env-cmd -e prod react-scripts start",
-    "build": "react-scripts build",
+    "build": "set NODE_ENV=prod &&  env-cmd -e prod react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
