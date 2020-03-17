@@ -127,7 +127,7 @@ class Students extends Component {
         return (
             <div className="col-10 students" style={{ overflow: 'auto', maxHeight: '100vh' }}>
 
-                <div className="filters">
+                {/*<div className="filters">
                     <div className="d-flex flex-wrap">
                         <select name="statut" className={this.state.statut != 'Statut' ? 'custom-select blue' : 'custom-select'} value={this.state.statut} onChange={(e) => this.handleInputChange(e)}>
                             <option defaultValue>Statut</option>
@@ -182,9 +182,9 @@ class Students extends Component {
                             <option defaultValue>Cursus</option>
                             {this.props.filters.cursus.length > 0 ? this.props.filters.cursus.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
                         </select>
-                    </div>
-
                 </div>
+
+        </div>*/}
                 <table className="table table-hover" style={{ padding: '1rem' }}>
                     <thead>
                         <tr>

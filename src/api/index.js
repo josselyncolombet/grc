@@ -1,5 +1,5 @@
 export const getStudents = async () => {
-    const url = 'http://localhost:8080/students'
+    const url = process.env.REACT_APP_BASE_URL+'students'
     try{
         const response = await fetch(url, {
             method: 'GET',
@@ -16,7 +16,7 @@ export const getStudents = async () => {
 }
 
 export const addStudent = async (student) => {
-     const url = 'http://localhost:8080/students'
+     const url = process.env.REACT_APP_BASE_URL+'students'
     try{
         const response = await fetch(url, {
             method: 'POST',
