@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App'
+import Enterprise from './views/Enterprise'
 
 import {
 	Router,
@@ -23,6 +24,7 @@ const Root = () => {
 			<Router history={history}>
 				<Switch>
 					<Route exact path='/' component={App} />
+					<Route exact path='/enterprise' component={Enterprise} />
 				</Switch>
 			</Router>
 		</Provider>

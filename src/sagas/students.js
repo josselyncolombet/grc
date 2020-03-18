@@ -7,7 +7,7 @@ import {
   fork
 } from 'redux-saga/effects'
 import * as fromActions from '../actions'
-import * as fromApi from '../api'
+import * as fromApi from '../api/'
 
 const watchGetStudents = function* () {
   try {
