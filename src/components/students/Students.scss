@@ -18,8 +18,7 @@ tr {
 }
 
 .students{
-    background: #F5F6FA;
-    padding: 1rem;
+    padding: 3rem;
 }
 
 .btn-add-student{
@@ -60,7 +59,7 @@ tr {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-            padding: 1rem;
+            padding: .25rem;
             width: 100%;
             
 
@@ -102,6 +101,14 @@ tr {
     }
 }
 
+.MuiPaper-elevation2 {
+    box-shadow: none !important;
+}
+
+.MuiTableCell-footer{
+    border-bottom: none !important;
+}
+
 
 .search{
     padding: 1rem 2rem;
@@ -121,7 +128,7 @@ tr {
 }
 
 .blue{
-    background: #713BDB url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='white' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px;
+    background: #0F206A url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='white' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px;
     color:white;
 }
 
@@ -137,7 +144,7 @@ tr {
     }
 
     .blue{
-        background: #713BDB url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='white' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px;
+        background: #0F206A url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='white' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px;
         color:white;
     }
 
@@ -188,24 +195,40 @@ tr {
     display: flow-root;
     background-color:black;
     padding:.1rem .5rem;
+    text-align: center;
     border-radius: .5rem;
     font-weight: 500;
     color:white;
 }
 
 .purple{
-    background-color:#713BDB;
+    background-color:#235EE7;
+    color:white;
+}
+
+.darkblue{
+    background-color: #0F206A;
     color:white;
 }
 
 .yellow{
-    background-color:#f1c40f;
+    background-color:#f9ca24;
     color:white;
 }
 
 .orange{
-    background-color:#ffbe7678 !important;
-    color:#f0932b !important;
+    background-color:#f0932b !important;
+    color:white !important;
+}
+
+.pink{
+    background-color:#eb4d4b !important;
+    color:white !important;
+}
+
+.green{
+    background-color:#badc58 !important;
+    color:white !important;
 }
 
 .sliding-panel-container.active {

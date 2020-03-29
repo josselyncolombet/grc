@@ -6,14 +6,10 @@ import * as fromActions from '../../actions'
 import SlidingPanel from 'react-sliding-side-panel'
 import { Accordion, Card, OverlayTrigger, Popover } from 'react-bootstrap'
 import moment from 'moment'
-import {
-    Timeline,
-    Content,
-    ContentYear,
-    ContentBody,
-    Description
-} from 'vertical-timeline-component-react';
-
+import { Doughnut } from 'react-chartjs-2';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHourglassHalf, faCheck, faFileExcel } from '@fortawesome/free-solid-svg-icons'
+import MaterialTable from "material-table";
 import fuzzy from 'fuzzy-search'
 import Select from 'react-select'
 
@@ -26,6 +22,51 @@ const options = [
     { value: 'Master ESI', label: 'Master ESI' }
 ]
 
+const data1 = {
+    datasets: [{
+        data: [4, 0],
+        backgroundColor: [
+            '#235EE7',
+            '#36A2EB'
+        ]
+    }],
+    labels: [
+        'Prospects',
+        'Apprenants',
+        ]
+};
+
+const data2 = {
+    datasets: [{
+        data: [1, 1, 3, 2],
+        backgroundColor: [
+            '#235EE7',
+            '#0F206A',
+            '#eb4d4b',
+            '#f0932b'
+        ]
+    }],
+    labels: [
+        'BTS SIO',
+        'Cycle ESI',
+        'Bachelor RPI',
+        'TIIS'
+    ]
+};
+
+const data3 = {
+    datasets: [{
+        data: [4,0],
+        backgroundColor: [
+            '#235EE7',
+            '#36A2EB',
+        ]
+    }],
+    labels: [
+        'Disponible',
+        'En Entreprise',
+    ]
+};
 
 
 class Students extends Component {
@@ -57,7 +98,28 @@ class Students extends Component {
                 coaching: false,
                 phoning: false,
                 classroom: false
-            }
+            },
+            columns: [
+                { title: 'Nom', field: 'name', cellStyle: { padding: "0rem 0rem 0rem 0.35rem" } },
+                { title: 'Statut', field: 'status', editable: 'never', cellStyle: { padding: 0 },  render: rowData => <span className={rowData.status == 'prospect' ? 'pills purple' : 'pills green'}> {rowData.status} </span> },
+                { title: 'Source', field: 'source' },
+                { title: 'Date', field: 'date', cellStyle: { padding: 0 } },
+                { title: 'Formation souhaitée', field: 'trainings', cellStyle: { padding: 0 },  render: rowData => rowData.trainings.map(t => 
+                    <span className={t == 'BTS SIO' ? 'pills purple' : t == "Cycle ESI" ? 'pills darkblue' : t == "Bachelor RPI" ? 'pills pink' : 'pills orange'}> {t} </span>
+                )},
+                { title: 'JPO', field: 'openhouse', cellStyle: { padding: 0 } },
+                { title: 'Entretien', field: 'interview', cellStyle: { padding: 0 } },
+                {
+                    title: 'PPE', field: 'pp', editComponent: props => (<Select options={options} onChange={(e) => this.handleReactSelectChange(e)} isMulti placeholder="Formation(s) souhaitée(s)" />),
+                    cellStyle: { padding: 0 }
+                },
+                { title: 'AI', field: 'receipt', cellStyle: { padding: 0 } },
+                { title: 'Classe', field: 'classroom', cellStyle: { padding: 0 } },
+                { title: 'Coaching', field: 'coaching', cellStyle: { padding: 0 } },
+                { title: 'Prospection', field: 'phoning', cellStyle: { padding: 0 } },
+            ]
+
+
         }
     }
 
@@ -84,7 +146,7 @@ class Students extends Component {
     }
 
     handleReactSelectChange = selectedOptions => {
-        let trainings= selectedOptions.map(t => t.value)
+        let trainings = selectedOptions.map(t => t.value)
         this.setState({ trainings: trainings })
     };
 
@@ -125,128 +187,207 @@ class Students extends Component {
 
     render() {
         return (
-            <div className="col-10 students" style={{ overflow: 'auto', maxHeight: '100vh' }}>
+            <div className="container-fluid" style={{ padding: 0 }}>
+                <div className="row" style={{ borderBottom: '1px solid #ececec' }}>
+                    <div className="col-12 students" style={{ overflow: 'auto', maxHeight: '100vh' }}>
+                        {/* <div className="filters">
+                            <div className="d-flex flex-wrap">
+                                
+                                <select name="statut" className={this.state.statut != 'Statut' ? 'custom-select blue' : 'custom-select'} value={this.state.statut} onChange={(e) => this.handleInputChange(e)}>
+                                    <option defaultValue>Statut</option>
+                                    {this.props.filters.status.length > 0 ? this.props.filters.status.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
+                                </select>
+                                <select name="source" className={this.state.source != 'Source' ? 'custom-select blue' : 'custom-select'} value={this.state.source} onChange={(e) => this.handleInputChange(e)}>
+                                    <option defaultValue>Source</option>
+                                    {this.props.filters.source.length > 0 ? this.props.filters.source.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
+                                </select>
+                                <select name="training" className={this.state.training != 'Formation souhaitée' ? 'custom-select blue' : 'custom-select'} value={this.state.training} onChange={(e) => this.handleInputChange(e)}>
+                                    <option defaultValue>Formation</option>
+                                    {this.props.filters.trainings.length > 0 ? this.props.filters.trainings.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
+                                </select>
+                                <select name="openhouse" className={this.state.openhouse != 'Portes ouvertes' ? 'custom-select blue' : 'custom-select'} value={this.state.openhouse} onChange={(e) => this.handleInputChange(e)}>
+                                    <option defaultValue>JPO</option>
+                                    {this.props.filters.openhouse.length > 0 ? this.props.filters.openhouse.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
+                                </select>
+                                <select name="interview" className={this.state.interview != 'Entretien' ? 'custom-select blue' : 'custom-select'} value={this.state.interview} onChange={(e) => this.handleInputChange(e)}>
+                                    <option defaultValue>Entretien</option>
+                                    <option value="true">Entretien : Oui</option>
+                                    <option value="false">Entretien : Non</option>
+                                </select>
+                                <select name="pp" className={this.state.pp != 'PPE' ? 'custom-select blue' : 'custom-select'} value={this.state.pp} onChange={(e) => this.handleInputChange(e)}>
+                                    <option defaultValue>PPE</option>
+                                    <option value="true">PPE : Oui</option>
+                                    <option value="false">PPE : Non</option>
+                                </select>
+                                <select name="receipt" className={this.state.receipt != "Attestation d'inscription" ? 'custom-select blue' : 'custom-select'} value={this.state.receipt} onChange={(e) => this.handleInputChange(e)}>
+                                    <option defaultValue>AI</option>
+                                    <option value="true">AI : Oui</option>
+                                    <option value="false">AI : Non</option>
+                                </select>
+                                <select name="classroom" className={this.state.classroom != "Classe" ? 'custom-select blue' : 'custom-select'} value={this.state.classroom} onChange={(e) => this.handleInputChange(e)}>
+                                    <option defaultValue>Classe</option>
+                                    {this.props.filters.classroom.length > 0 ? this.props.filters.classroom.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
+                                </select>
+                                <select name="coaching" className={this.state.coaching != 'Coaching' ? 'custom-select blue' : 'custom-select'} value={this.state.coaching} onChange={(e) => this.handleInputChange(e)}>
+                                    <option defaultValue>Coaching</option>
+                                    <option value="true">AI : Oui</option>
+                                    <option value="false">AI : Non</option>
+                                </select>
+                                <select name="phoning" className={this.state.phoning != 'Prospection' ? 'custom-select blue' : 'custom-select'} value={this.state.phoning} onChange={(e) => this.handleInputChange(e)}>
+                                    <option defaultValue>Prospection</option>
+                                    <option value="true">AI : Oui</option>
+                                    <option value="false">AI : Non</option>
+                                </select>
+                                <select name="institute" className={this.state.institute != 'Etablissement' ? 'custom-select blue' : 'custom-select'} value={this.state.institute} onChange={(e) => this.handleInputChange(e)}>
+                                    <option defaultValue>Etablissement</option>
+                                    {this.props.filters.institute.length > 0 ? this.props.filters.institute.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
+                                </select>
+                                <select name="cursus" className={this.state.cursus != 'Cursus' ? 'custom-select blue' : 'custom-select'} value={this.state.cursus} onChange={(e) => this.handleInputChange(e)}>
+                                    <option defaultValue>Cursus</option>
+                                    {this.props.filters.cursus.length > 0 ? this.props.filters.cursus.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
+                                </select>
+                            </div>
 
-                {/*<div className="filters">
-                    <div className="d-flex flex-wrap">
-                        <select name="statut" className={this.state.statut != 'Statut' ? 'custom-select blue' : 'custom-select'} value={this.state.statut} onChange={(e) => this.handleInputChange(e)}>
-                            <option defaultValue>Statut</option>
-                            {this.props.filters.status.length > 0 ? this.props.filters.status.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
-                        </select>
-                        <select name="source" className={this.state.source != 'Source' ? 'custom-select blue' : 'custom-select'} value={this.state.source} onChange={(e) => this.handleInputChange(e)}>
-                            <option defaultValue>Source</option>
-                            {this.props.filters.source.length > 0 ? this.props.filters.source.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
-                        </select>
-                        <select name="training" className={this.state.training != 'Formation souhaitée' ? 'custom-select blue' : 'custom-select'} value={this.state.training} onChange={(e) => this.handleInputChange(e)}>
-                            <option defaultValue>Formation</option>
-                            {this.props.filters.trainings.length > 0 ? this.props.filters.trainings.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
-                        </select>
-                        <select name="openhouse" className={this.state.openhouse != 'Portes ouvertes' ? 'custom-select blue' : 'custom-select'} value={this.state.openhouse} onChange={(e) => this.handleInputChange(e)}>
-                            <option defaultValue>JPO</option>
-                            {this.props.filters.openhouse.length > 0 ? this.props.filters.openhouse.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
-                        </select>
-                        <select name="interview" className={this.state.interview != 'Entretien' ? 'custom-select blue' : 'custom-select'} value={this.state.interview} onChange={(e) => this.handleInputChange(e)}>
-                            <option defaultValue>Entretien</option>
-                            <option value="true">Entretien : Oui</option>
-                            <option value="false">Entretien : Non</option>
-                        </select>
-                        <select name="pp" className={this.state.pp != 'PPE' ? 'custom-select blue' : 'custom-select'} value={this.state.pp} onChange={(e) => this.handleInputChange(e)}>
-                            <option defaultValue>PPE</option>
-                            <option value="true">PPE : Oui</option>
-                            <option value="false">PPE : Non</option>
-                        </select>
-                        <select name="receipt" className={this.state.receipt != "Attestation d'inscription" ? 'custom-select blue' : 'custom-select'} value={this.state.receipt} onChange={(e) => this.handleInputChange(e)}>
-                            <option defaultValue>AI</option>
-                            <option value="true">AI : Oui</option>
-                            <option value="false">AI : Non</option>
-                        </select>
-                        <select name="classroom" className={this.state.classroom != "Classe" ? 'custom-select blue' : 'custom-select'} value={this.state.classroom} onChange={(e) => this.handleInputChange(e)}>
-                            <option defaultValue>Classe</option>
-                            {this.props.filters.classroom.length > 0 ? this.props.filters.classroom.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
-                        </select>
-                        <select name="coaching" className={this.state.coaching != 'Coaching' ? 'custom-select blue' : 'custom-select'} value={this.state.coaching} onChange={(e) => this.handleInputChange(e)}>
-                            <option defaultValue>Coaching</option>
-                            <option value="true">AI : Oui</option>
-                            <option value="false">AI : Non</option>
-                        </select>
-                        <select name="phoning" className={this.state.phoning != 'Prospection' ? 'custom-select blue' : 'custom-select'} value={this.state.phoning} onChange={(e) => this.handleInputChange(e)}>
-                            <option defaultValue>Prospection</option>
-                            <option value="true">AI : Oui</option>
-                            <option value="false">AI : Non</option>
-                        </select>
-                        <select name="institute" className={this.state.institute != 'Etablissement' ? 'custom-select blue' : 'custom-select'} value={this.state.institute} onChange={(e) => this.handleInputChange(e)}>
-                            <option defaultValue>Etablissement</option>
-                            {this.props.filters.institute.length > 0 ? this.props.filters.institute.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
-                        </select>
-                        <select name="cursus" className={this.state.cursus != 'Cursus' ? 'custom-select blue' : 'custom-select'} value={this.state.cursus} onChange={(e) => this.handleInputChange(e)}>
-                            <option defaultValue>Cursus</option>
-                            {this.props.filters.cursus.length > 0 ? this.props.filters.cursus.map((s, i) => (<option value={s} key={i}>{s}</option>)) : null}
-                        </select>
+                        </div>
+                        <table className="table table-hover" style={{ padding: '1rem' }}>
+                            <thead>
+                                <tr>
+                                    <th scope="col"> Nom </th>
+                                    <th scope="col"> Statut </th>
+                                    <th scope="col"> Source </th>
+                                    <th scope="col"> Date </th>
+                                    <th scope="col"> Formation souhaitée </th>
+                                    <th scope="col"> JPO </th>
+                                    <th scope="col"> Entretien </th>
+                                    <th scope="col"> PPE </th>
+                                    <th scope="col"> AI </th>
+                                    <th scope="col"> Classe </th>
+                                    <th scope="col"> Coaching </th>
+                                    <th scope="col"> Prospection </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {
+                                    this.state.students.length > 0 ? this.state.students.map((student, i) =>
+                                        <tr key={i} onClick={() => this.setOpenPanel(true, student)}>
+                                            <td className='name'> {student.name} {student.firstname}</td>
+                                            <td><span className={student.status == 'prospect' ? 'pills purple' : 'pills green'}> {student.status} </span></td>
+                                            <td> {student.source} </td>
+                                            <td> {moment.unix(student.timestamp / 1000).format("MM-DD-YYYY")}</td>
+                                            <td> {student.trainings.map((training, i) => <span key={i} className="pills purple">{training}</span>)}</td>
+                                            <td> 11/03/2020 </td>
+                                            <td> {student.interview}</td>
+                                            <td> {student.pp.length > 0 ? <i className="dot" /> : null}</td>
+                                            <td> {student.receipt.length > 0 ? <i className="dot" /> : null} </td>
+                                            <td> {student.classroom}</td>
+                                            <td> {student.coaching} </td>
+                                            <td> {
+                                                student.phoning.map((phoning, id) => {
+                                                    return (<div>
+                                                        <OverlayTrigger
+                                                            placement="left"
+                                                            delay={{ show: 100, hide: 400 }}
+                                                            overlay={
+                                                                <Popover id="popover-basic">
+                                                                    <Popover.Title as="h3">{phoning.date}</Popover.Title>
+                                                                    <Popover.Content className="popover-content">
+                                                                        {phoning.comment}
+                                                                    </Popover.Content>
+                                                                </Popover>
+                                                            }
+                                                        >
+                                                            <i key={id} className="dot-p" />
+                                                        </OverlayTrigger>
+
+                                                    </div>
+                                                    )
+                                                })
+                                            }
+                                            </td>
+
+                                        </tr>
+                                    ) : null
+                                }
+                            </tbody>
+                        </table> */}
+                        <MaterialTable
+                            title="Prospects et Apprenants"
+                            columns={this.state.columns}
+                            data={this.state.students}
+                            localization={{
+                                body: {
+                                    addTooltip: "Ajouter",
+                                    editTooltip: "Modifier",
+                                    deleteTooltip: "Supprimer",
+                                    editRow: {
+                                        saveTooltip: "Sauvegarder",
+                                        cancelTooltip: "Annuler",
+                                        deleteText: "Supprimer",
+                                    },
+                                    filterRow: {
+                                        filterTooltip: "Filtre"
+                                    },
+                                    emptyDataSourceMessage: 'Aucune donnée disponible'
+                                },
+                                pagination: {
+                                    firstTooltip: "Première page",
+                                    previousTooltip: "Page précédente",
+                                    nextTooltip: "Page suivante",
+                                    lastTooltip: "Dernière page",
+                                    labelRowsSelect: "lignes"
+                                },
+                                toolbar: {
+                                    searchTooltip: "Rechercher",
+                                    searchPlaceholder: "Rechercher"
+                                }
+                            }}
+                            onRowClick={(event, rowData) => this.setOpenPanel("panel", rowData)}
+                            options={{ actionsCellStyle: { padding: 0 }, filtering: true }}
+                            editable={{
+                                onRowAdd: newData =>
+                                    new Promise((resolve, reject) => {
+                                        setTimeout(() => {
+                                            {
+                                                const data = this.state.data;
+                                                data.push(newData);
+                                                this.setState({ data }, () => resolve());
+                                            }
+                                            resolve()
+                                        }, 1000)
+                                    }),
+                                onRowUpdate: (newData, oldData) =>
+
+                                    new Promise((resolve, reject) => {
+                                        setTimeout(() => {
+                                            {
+                                                console.log(oldData)
+                                                resolve();
+                                                this.props.updateEmployment(oldData.idEmployment, newData);
+                                            }
+                                        }, 1000)
+                                    })
+                            }}
+                        />
+                    </div>
                 </div>
 
-        </div>*/}
-                <table className="table table-hover" style={{ padding: '1rem' }}>
-                    <thead>
-                        <tr>
-                            <th scope="col"> Nom </th>
-                            <th scope="col"> Statut </th>
-                            <th scope="col"> Source </th>
-                            <th scope="col"> Date </th>
-                            <th scope="col"> Formation souhaitée </th>
-                            <th scope="col"> JPO </th>
-                            <th scope="col"> Entretien </th>
-                            <th scope="col"> PPE </th>
-                            <th scope="col"> AI </th>
-                            <th scope="col"> Classe </th>
-                            <th scope="col"> Coaching </th>
-                            <th scope="col"> Prospection </th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div className="row" style={{ borderBottom: '1px solid #ececec' }}>
+                    <div className="col-4" style={{ padding: '2rem' }}>
+                    <p>Apprenants / Prospects</p>
+                        <Doughnut data={data1} />
+                    </div>
+                    <div className="col-4" style={{ borderRight: '1px solid #ececec', borderLeft: '1px solid #ececec', padding: '2rem' }}>
+                    <p>Repartition par formation</p>
+                        <Doughnut data={data2} />
+                    </div>
+                    <div className="col-4" style={{ padding: '2rem' }}>
+                    <p>Disponible / En entreprise</p>
+                        <Doughnut data={data3} />
+                    </div>
 
-                        {
-                            this.state.students.length > 0 ? this.state.students.map((student, i) =>
-                                <tr key={i} onClick={() => this.setOpenPanel(true, student)}>
-                                    <td className='name'> {student.name} {student.firstname}</td>
-                                    <td><span className={student.status == 'prospect' ? 'pills purple' : 'pills green'}> {student.status} </span></td>
-                                    <td> {student.source} </td>
-                                    <td> {moment.unix(student.timestamp / 1000).format("MM-DD-YYYY")}</td>
-                                    <td> {student.trainings.map((training, i) => <span key={i} className="pills purple">{training}</span>)}</td>
-                                    <td> 11/03/2020 </td>
-                                    <td> {student.interview}</td>
-                                    <td> {student.pp.length > 0 ? <i className="dot" /> : null}</td>
-                                    <td> {student.receipt.length > 0 ? <i className="dot" /> : null} </td>
-                                    <td> {student.classroom}</td>
-                                    <td> {student.coaching} </td>
-                                    <td> {
-                                        student.phoning.map((phoning, id) => {
-                                            return (<div>
-                                                <OverlayTrigger
-                                                    placement="left"
-                                                    delay={{ show: 100, hide: 400 }}
-                                                    overlay={
-                                                        <Popover id="popover-basic">
-                                                            <Popover.Title as="h3">{phoning.date}</Popover.Title>
-                                                            <Popover.Content className="popover-content">
-                                                                {phoning.comment}
-                                                            </Popover.Content>
-                                                        </Popover>
-                                                    }
-                                                >
-                                                    <i key={id} className="dot-p" />
-                                                </OverlayTrigger>
+                </div>
 
-                                            </div>
-                                            )
-                                        })
-                                    }
-                                    </td>
-
-                                </tr>
-                            ) : null
-                        }
-                    </tbody>
-                </table>
                 <SlidingPanel
                     type={'right'}
                     isOpen={this.state.openPanel}
@@ -287,7 +428,7 @@ class Students extends Component {
                                         <section>
                                             <div className="pp">
                                                 <div className="group">
-                                                    <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0 }}>1</p>
+                                                    <p style={{ fontSize: '1.5rem', fontWeight: '800', margin: 0 }}>1</p>
                                                     <div className="text">
                                                         <p className="title">Journée portes ouvertes</p>
                                                         <p className="date">Fait le : 16/02/2020</p>
@@ -324,7 +465,7 @@ class Students extends Component {
                                         <section>
                                             <div className="pp">
                                                 <div className="group">
-                                                    <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0 }}>2</p>
+                                                    <p style={{ fontSize: '1.5rem', fontWeight: '800', margin: 0 }}>2</p>
                                                     <div className="text">
                                                         <p className="title">Entretien</p>
                                                         <p className="date">A faire</p>
@@ -374,7 +515,7 @@ class Students extends Component {
                                         <section>
                                             <div className="pp">
                                                 <div className="group">
-                                                    <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0 }}>3</p>
+                                                    <p style={{ fontSize: '1.5rem', fontWeight: '800', margin: 0 }}>3</p>
                                                     <div className="text">
                                                         <p className="title">PPE</p>
                                                         <p className="date">A faire</p>
@@ -392,12 +533,12 @@ class Students extends Component {
                                                 <div className="form-row">
                                                     <div className="form-group col-md-6">
                                                         <label for="name">Nom: </label>
-                                                        <input type="text" className="form-control form-control-sm" value={this.state.student.name}/>
+                                                        <input type="text" className="form-control form-control-sm" value={this.state.student.name} />
 
                                                     </div>
                                                     <div className="form-group col-md-6">
                                                         <label for="name">Prénom: </label>
-                                                        <input type="text" className="form-control form-control-sm" value={this.state.student.firstname}/>
+                                                        <input type="text" className="form-control form-control-sm" value={this.state.student.firstname} />
 
                                                     </div>
                                                 </div>
@@ -470,7 +611,7 @@ class Students extends Component {
                                         <section>
                                             <div className="pp">
                                                 <div className="group">
-                                                    <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0 }}>4</p>
+                                                    <p style={{ fontSize: '1.5rem', fontWeight: '800', margin: 0 }}>4</p>
                                                     <div className="text">
                                                         <p className="title">Attestation d'inscription</p>
                                                         <p className="date">A faire</p>
@@ -484,16 +625,16 @@ class Students extends Component {
                                     </Accordion.Toggle>
                                     <Accordion.Collapse eventKey="3">
                                         <Card.Body>
-                                        <div className="form-student">
+                                            <div className="form-student">
                                                 <div className="form-row">
                                                     <div className="form-group col-md-6">
                                                         <label for="name">Nom: </label>
-                                                        <input type="text" className="form-control form-control-sm" value={this.state.student.name}/>
+                                                        <input type="text" className="form-control form-control-sm" value={this.state.student.name} />
 
                                                     </div>
                                                     <div className="form-group col-md-6">
                                                         <label for="name">Prénom: </label>
-                                                        <input type="text" className="form-control form-control-sm" value={this.state.student.firstname}/>
+                                                        <input type="text" className="form-control form-control-sm" value={this.state.student.firstname} />
 
                                                     </div>
                                                 </div>
@@ -531,7 +672,7 @@ class Students extends Component {
                                         <section>
                                             <div className="pp">
                                                 <div className="group">
-                                                    <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0 }}>5</p>
+                                                    <p style={{ fontSize: '1.5rem', fontWeight: '800', margin: 0 }}>5</p>
                                                     <div className="text">
                                                         <p className="title">Coaching</p>
                                                         <p className="date">A faire</p>
@@ -581,7 +722,7 @@ class Students extends Component {
                                         <section>
                                             <div className="pp">
                                                 <div className="group">
-                                                    <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0 }}>6</p>
+                                                    <p style={{ fontSize: '1.5rem', fontWeight: '800', margin: 0 }}>6</p>
                                                     <div className="text">
                                                         <p className="title">Prospection téléphonique</p>
                                                         <p className="date">A faire</p>
@@ -621,7 +762,7 @@ class Students extends Component {
                                         <section>
                                             <div className="pp">
                                                 <div className="group">
-                                                    <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0 }}>7</p>
+                                                    <p style={{ fontSize: '1.5rem', fontWeight: '800', margin: 0 }}>7</p>
                                                     <div className="text">
                                                         <p className="title">Rentrée</p>
                                                         <p className="date">A faire</p>
@@ -678,8 +819,9 @@ class Students extends Component {
                         </div>
                     </div>
                 </SlidingPanel>
+            </div >
 
-            </div>
+
         );
     }
 }

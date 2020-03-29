@@ -88,14 +88,8 @@ class Header extends Component {
     render() {
         return (
 
-            <div className="col-2 sidebar">
+            <div className="sidebar">
                 <div className="links">
-                    <div style={{ fontWeight: 'bold', fontSize: '1.2rem', padding: '1.4rem' }}>
-                        <img src={logo} className="img-fluid" style={{ height: '45px' }} /> Dashboard
-                </div>
-                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', color: '#6D757D', padding: '1rem' }}>
-                        <i className="gg-search" /><input type="text" className="form-control" placeholder="Rechercher..." style={{ border: 'none' }} />
-                    </div>
                     <div className="navitems">
                         <i className="gg-home"></i>
                         Objectifs
@@ -119,12 +113,12 @@ class Header extends Component {
 
                 </div>
 
-                <div className="actions">
+                {/*<div className="actions">
                     <button className="btn btn-primary btn-block" onClick={() => this.setOpenCreatePanel("student")}> <div className="btn-add-student"><i className="gg-add" /> Créer un étudiant</div></button>
                     <button className="btn btn-primary btn-block" onClick={() => this.setOpenCreatePanel("enterprise")}> <div className="btn-add-student"><i className="gg-add" /> Créer une entreprise</div></button>
                     <button className="btn btn-primary btn-block" onClick={() => this.setOpenCreatePanel("employment")}> <div className="btn-add-student"><i className="gg-add" /> Créer une offre d'emploi</div></button>
                     <button className="btn btn-export btn-block" onClick={() => this.setOpenCreatePanel("export")}> <div className="btn-add-student"><i className="gg-add" /> Exporter en csv</div></button>
-                </div>
+        </div>*/}
 
 
                 <SlidingPanel

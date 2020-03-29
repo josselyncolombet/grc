@@ -1,11 +1,13 @@
 
 .links{
-    padding: .75rem;
+    display: flex;
+    flex-direction: row;
+    font-size: .85rem;
     text-align: center;
 }
 
 .sidebar{
-    box-shadow: 16px 15px 20px 0px rgba(0,0,0,0.06);
+    border-right: 2px solid #ececec;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -33,19 +35,10 @@
 }
 
 .btn-primary{
-    background:#713BDB;
-    border: 1px solid  #713BDB;
+    padding : .1rem 1rem;
+    border-radius: 1rem;
 }
 
-.btn-primary:hover{
-    background:#713BDB;
-    border: 1px solid  #713BDB;
-}
-
-.btn-primary:active{
-    background:#713BDB;
-    border: 1px solid  #713BDB;
-}
 
 .navitems{
     text-align: center;
