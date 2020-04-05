@@ -1,54 +1,50 @@
 export const getStudents = async () => {
-    const url = process.env.REACT_APP_BASE_URL+'students'
-    try{
+    const url = process.env.REACT_APP_BASE_URL + 'students'
+    try {
         const response = await fetch(url, {
             method: 'GET',
-            headers:{
-                'Accept':'application/json',
+            headers: {
+                'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
         })
         return await response.json()
-        
-    } catch(err){
+
+    } catch (err) {
         return console.error(err)
     }
 }
 
 export const addStudent = async (student) => {
-     const url = process.env.REACT_APP_BASE_URL+'students'
-    try{
+    const url = process.env.REACT_APP_BASE_URL + 'students'
+    try {
         const response = await fetch(url, {
             method: 'POST',
-            headers:{
-                'Accept':'application/json',
+            headers: {
+                'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(student)
         })
         return await response.json()
-        
-    } catch(err){
+
+    } catch (err) {
         return console.error(err)
     }
 }
 
-// Fonction pour modifier un étudiant manuellement
-export async function updateStudent(token, student) {
+export async function updateStudent(student) {
 
-    const url = process.env.REACT_APP_BASE_URL+'students/'
-    
+    const url = process.env.REACT_APP_BASE_URL + 'students/' + student._id
+
     try {
         const response = await fetch(url, {
             method: 'PUT',
             headers: {
-                Accept: 'application/json',
+                'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'x-access-token': token
             },
-            body: JSON.stringify({
-                student: student
-            })
+            body: JSON.stringify(student)
         })
         return await response.json()
     }
@@ -58,22 +54,17 @@ export async function updateStudent(token, student) {
 
 }
 
-// Fonction pour supprimer un étudiant manuellement
-export async function deleteStudent(token, id_student) {
+export async function deleteStudent(id) {
 
-    const url = process.env.REACT_APP_BASE_URL+'students/'
-    
+    const url = process.env.REACT_APP_BASE_URL + 'students/' + id
+
     try {
         const response = await fetch(url, {
             method: 'DELETE',
             headers: {
-                Accept: 'application/json',
+                'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'x-access-token': token
-            },
-            body: JSON.stringify({
-                id_student: id_student
-            })
+            }
         })
         return await response.json()
     }

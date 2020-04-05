@@ -18,7 +18,7 @@ tr {
 }
 
 .students{
-    padding: 3rem;
+    padding: 0rem 2rem;
 }
 
 .btn-add-student{
@@ -105,9 +105,16 @@ tr {
     box-shadow: none !important;
 }
 
+.MuiTableCell-alignLeft{
+    text-align: center !important;
+}
 .MuiTableCell-footer{
     border-bottom: none !important;
 }
+table {
+    text-align: center !important;
+    width: 100%;
+  }
 
 
 .search{
@@ -266,7 +273,7 @@ tr {
 .dot-p {
   height: 8px;
   width: 8px;
-  background-color: #713BDB;
+  background-color: #0F206A;
   border-radius: 50%;
   display: inline-block;
   margin-right: 5px;
@@ -274,7 +281,7 @@ tr {
 .dot {
   height: 8px;
   width: 8px;
-  background-color: #713BDB;
+  background-color: #0F206A;
   border-radius: 50%;
   display: inline-block;
 }

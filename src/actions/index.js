@@ -3,6 +3,8 @@ import * as fromAPI from '../api'
 export const GET_STUDENTS = "GET_STUDENTS"
 export const GET_STUDENTS_SAGA = "GET_STUDENTS_SAGA"
 export const ADD_STUDENT_SAGA = "ADD_STUDENT"
+export const UPDATE_STUDENT = "UPDATE_STUDENT"
+export const DELETE_STUDENT = "DELETE_STUDENT"
 
 export const GET_ENTERPRISES = "GET_ENTERPRISES"
 export const GET_ENTERPRISES_SAGA = "GET_ENTERPRISES_SAGA"
@@ -15,6 +17,17 @@ export const ADD_EMPLOYMENT_SAGA = "ADD_EMPLOYMENT"
 export const getStudentsSaga = () => ({
     type: GET_STUDENTS_SAGA
 })
+
+export const updateStudent = student => ({
+    type: UPDATE_STUDENT,
+    payload: student
+})
+
+export const deleteStudent = student => ({
+    type: DELETE_STUDENT,
+    payload: student
+})
+
 export const allStudents = students => ({
     type: GET_STUDENTS,
     payload: students

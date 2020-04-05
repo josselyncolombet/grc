@@ -23,8 +23,8 @@ const Root = () => {
 		<Provider store={store}>
 			<Router history={history}>
 				<Switch>
-					<Route exact path='/' component={App} />
-					<Route exact path='/enterprise' component={Enterprise} />
+				<Route exact path='/' component={App} />
+				
 				</Switch>
 			</Router>
 		</Provider>
