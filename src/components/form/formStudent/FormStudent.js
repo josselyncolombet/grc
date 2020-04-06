@@ -162,6 +162,10 @@ class FormStudent extends Component {
                             scolarship:{
                                 value:'',
                                 date:''
+                            },
+                            coaching:{
+                                value:'',
+                                date:''
                             }
 
                         })}>Créer un étudiant</button>
