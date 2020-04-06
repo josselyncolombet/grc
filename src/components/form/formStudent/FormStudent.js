@@ -158,6 +158,10 @@ class FormStudent extends Component {
                             openhouse:{
                                 value:'',
                                 date:''
+                            },
+                            scolarship:{
+                                value:'',
+                                date:''
                             }
 
                         })}>Créer un étudiant</button>
