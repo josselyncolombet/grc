@@ -166,6 +166,11 @@ class FormStudent extends Component {
                             coaching:{
                                 value:'',
                                 date:''
+                            },
+                            phoning:{
+                                value:'',
+                                date:'',
+                                sessions:[]
                             }
 
                         })}>Créer un étudiant</button>
